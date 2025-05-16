@@ -1,0 +1,643 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Programming 101: A Beginner's Guide to Coding</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        header {
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: white;
+            text-align: center;
+            padding: 3rem 1rem;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+        }
+        nav {
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        nav ul li {
+            margin: 0.5rem;
+        }
+        nav ul li a {
+            text-decoration: none;
+            color: #1e3a8a;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        nav ul li a:hover {
+ музеum background-color: #e0f2fe;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        section {
+            background: #fff;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            color: #1e3a8a;
+            border-bottom: 2px solid #3b82f6;
+            padding-bottom: 0.5rem;
+        }
+        h3 {
+            color: #2563eb;
+        }
+        code {
+            background: #f1f5f9;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+        pre code {
+            background: none;
+            padding: 0;
+        }
+        ul, ol {
+            margin: 1rem 0;
+        }
+        a {
+            color: #3b82f6;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .assessment {
+            background: #eff6ff;
+            padding: 1rem;
+            border-left: 4px solid #3b82f6;
+            margin-top: 1rem;
+        }
+        footer {
+            text-align: center;
+            padding: 2rem;
+            background: #1e3a8a;
+            color: white;
+        }
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8rem;
+            }
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            section {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Programming 101: A Beginner's Guide to Coding</h1>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="#overview">Overview</a></li>
+            <li><a href="#module1">Module 1</a></li>
+            <li><a href="#module2">Module 2</a></li>
+            <li><a href="#module3">Module 3</a></li>
+            <li><a href="#module4">Module 4</a></li>
+            <li><a href="#module5">Module 5</a></li>
+            <li><a href="#module6">Module 6</a></li>
+            <li><a href="#module7">Module 7</a></li>
+            <li><a href="#conclusion">Conclusion</a></li>
+        </ul>
+    </nav>
+    <div class="container">
+        <section id="overview">
+            <h2>Course Overview</h2>
+            <p>This Programming 101 course is designed for absolute beginners with no prior coding experience. It introduces fundamental programming concepts and techniques using Python, a versatile and beginner-friendly language. The course is structured into modules, each covering key topics, practical examples, references, and assessments to reinforce learning. By the end, you'll have a solid foundation to write simple programs and pursue further programming studies.</p>
+        </section>
+
+        <section id="module1">
+            <h2>Module 1: Introduction to Programming</h2>
+            <h3>Objectives</h3>
+            <ul>
+                <li>Understand what programming is and its real-world applications.</li>
+                <li>Learn about programming languages and why Python is a great choice for beginners.</li>
+                <li>Set up a development environment.</li>
+            </ul>
+            <h3>What is Programming?</h3>
+            <p>Programming is the process of giving computers instructions to perform tasks. These instructions are written in a programming language that the computer can interpret. Think of programming as communicating with a computer to solve problems, automate tasks, or create applications like games, websites, or apps.</p>
+            <h3>Why Python?</h3>
+            <p>Python is:</p>
+            <ul>
+                <li><strong>Readable</strong>: Its syntax is clear and resembles English.</li>
+                <li><strong>Versatile</strong>: Used in web development, data science, automation, and more.</li>
+                <li><strong>Beginner-Friendly</strong>: Simple to learn yet powerful for advanced projects.</li>
+            </ul>
+            <h3>Setting Up Your Environment</h3>
+            <ol>
+                <li><strong>Install Python</strong>: Download the latest version from <a href="https://www.python.org/downloads/">python.org</a>.</li>
+                <li><strong>Choose an Editor</strong>:
+                    <ul>
+                        <li><strong>IDLE</strong>: Comes with Python, great for beginners.</li>
+                        <li><strong>VS Code</strong>: A popular editor with Python extensions (<a href="https://code.visualstudio.com/">code.visualstudio.com</a>).</li>
+                    </ul>
+                </li>
+                <li><strong>Test Your Setup</strong>:
+                    <ul>
+                        <li>Open a terminal or IDLE.</li>
+                        <li>Type <code>python --version</code> to confirm installation.</li>
+                        <li>Write your first program:</li>
+                    </ul>
+                    <pre><code>print("Hello, World!")</code></pre>
+                </li>
+            </ol>
+            <h3>Key Concepts</h3>
+            <ul>
+                <li><strong>Syntax</strong>: Rules that define how code is written.</li>
+                <li><strong>Statements</strong>: Individual instructions, like <code>print("Hello, World!")</code>.</li>
+                <li><strong>Comments</strong>: Notes in code, ignored by the computer, e.g., <code># This is a comment</code>.</li>
+            </ul>
+            <h3>References</h3>
+            <ul>
+                <li><a href="https://docs.python.org/3/">Python Official Documentation</a></li>
+                <li><a href="https://automatetheboringstuff.com/">Automate the Boring Stuff with Python</a> by Al Sweigart</li>
+                <li><a href="https://www.w3schools.com/python/">W3Schools Python Tutorial</a></li>
+            </ul>
+            <div class="assessment">
+                <h3>Assessment</h3>
+                <p><strong>Quiz</strong>:</p>
+                <ol>
+                    <li>What is programming? (2-3 sentences)</li>
+                    <li>Why is Python a good choice for beginners? List two reasons.</li>
+                    <li>What is the purpose of a comment in code?</li>
+                </ol>
+                <p><strong>Practical</strong>:</p>
+                <ul>
+                    <li>Install Python and an editor.</li>
+                    <li>Write a program that prints your name to the console.</li>
+                    <li>Save the file as <code>hello.py</code> and run it.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="module2">
+            <h2>Module 2: Variables and Data Types</h2>
+            <h3>Objectives</h3>
+            <ul>
+                <li>Learn how to store and manipulate data using variables.</li>
+                <li>Understand basic data types: integers, floats, strings, and booleans.</li>
+            </ul>
+            <h3>Variables</h3>
+            <p>A variable is like a labeled box that stores data. You assign a value to a variable using the <code>=</code> operator.</p>
+            <pre><code>name = "Alice"  # String
+age = 25        # Integer
+height = 5.5    # Float
+is_student = True  # Boolean</code></pre>
+            <h3>Data Types</h3>
+            <ul>
+                <li><strong>Integer</strong>: Whole numbers, e.g., <code>42</code>, <code>-10</code>.</li>
+                <li><strong>Float</strong>: Decimal numbers, e.g., <code>3.14</code>, <code>0.001</code>.</li>
+                <li><strong>String</strong>: Text, enclosed in quotes, e.g., <code>"Hello"</code>, <code>'World'</code>.</li>
+                <li><strong>Boolean</strong>: Represents <code>True</code> or <code>False</code>.</li>
+            </ul>
+            <h3>Operations</h3>
+            <p><strong>Arithmetic</strong>: <code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>, <code>//</code> (integer division), <code>%</code> (modulus), <code>**</code> (exponent).</p>
+            <pre><code>x = 10
+y = 3
+print(x + y)  # 13
+print(x / y)  # 3.333...
+print(x ** 2) # 100</code></pre>
+            <p><strong>String Operations</strong>:</p>
+            <pre><code>greeting = "Hello"
+name = "Bob"
+print(greeting + ", " + name)  # Hello, Bob</code></pre>
+            <h3>References</h3>
+            <ul>
+                <li><a href="https://realpython.com/python-data-types/">Python Data Types</a></li>
+                <li><a href="https://www.programiz.com/python-programming/variables-datatypes">Python Variables</a></li>
+                <li><a href="https://greenteapress.com/wp/think-python-2e/">Think Python</a> by Allen Downey</li>
+            </ul>
+            <div class="assessment">
+                <h3>Assessment</h3>
+                <p><strong>Quiz</strong>:</p>
+                <ol>
+                    <li>What is a variable? Provide an example.</li>
+                    <li>List four basic data types in Python.</li>
+                    <li>What does the <code>**</code> operator do?</li>
+                </ol>
+                <p><strong>Practical</strong>:</p>
+                <ul>
+                    <li>Write a program that:
+                        <ul>
+                            <li>Stores your age in a variable.</li>
+                            <li>Stores your name in a variable.</li>
+                            <li>Prints a sentence like: "My name is [name] and I am [age] years old."</li>
+                        </ul>
+                    </li>
+                    <li>Calculate the area of a rectangle (length * width) using two variables and print the result.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="module3">
+            <h2>Module 3: Control Flow</h2>
+            <h3>Objectives</h3>
+            <ul>
+                <li>Learn how to make decisions in code using conditionals.</li>
+                <li>Understand loops for repeating tasks.</li>
+            </ul>
+            <h3>Conditionals</h3>
+            <p>Use <code>if</code>, <code>elif</code>, and <code>else</code> to make decisions based on conditions.</p>
+            <pre><code>age = 18
+if age >= 18:
+    print("You are an adult.")
+elif age >= 13:
+    print("You are a teenager.")
+else:
+    print("You are a child.")</code></pre>
+            <h3>Comparison Operators</h3>
+            <ul>
+                <li><code>==</code>: Equal to</li>
+                <li><code>!=</code>: Not equal to</li>
+                <li><code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, <code>&gt;=</code>: Less than, greater than, etc.</li>
+            </ul>
+            <h3>Logical Operators</h3>
+            <ul>
+                <li><code>and</code>: Both conditions must be true.</li>
+                <li><code>or</code>: At least one condition must be true.</li>
+                <li><code>not</code>: Reverses the condition.</li>
+            </ul>
+            <pre><code>if age >= 18 and age <= 65:
+    print("You are of working age.")</code></pre>
+            <h3>Loops</h3>
+            <p><strong>For Loop</strong>: Iterates over a sequence (e.g., list, range).</p>
+            <pre><code>for i in range(5):  # Prints 0 to 4
+    print(i)</code></pre>
+            <p><strong>While Loop</strong>: Repeats as long as a condition is true.</p>
+            <pre><code>count = 1
+while count <= 5:
+    print(count)
+    count += 1</code></pre>
+            <h3>References</h3>
+            <ul>
+                <li><a href="https://docs.python.org/3/tutorial/controlflow.html">Python Control Flow</a></li>
+                <li><a href="https://realpython.com/python-conditional-statements/">Real Python: Conditionals</a></li>
+                <li><a href="https://realpython.com/python-for-loop/">Real Python: Loops</a></li>
+            </ul>
+            <div class="assessment">
+                <h3>Assessment</h3>
+                <p><strong>Quiz</strong>:</p>
+                <ol>
+                    <li>What is the difference between <code>if</code> and <code>elif</code>?</li>
+                    <li>Write a condition that checks if a number is both positive and even.</li>
+                    <li>What does <code>range(5)</code> produce?</li>
+                </ol>
+                <p><strong>Practical</strong>:</p>
+                <ul>
+                    <li>Write a program that:
+                        <ul>
+                            <li>Asks the user for a number (use <code>input()</code>).</li>
+                            <li>Prints whether the number is "Positive", "Negative", or "Zero".</li>
+                        </ul>
+                    </li>
+                    <li>Write a program that prints all even numbers from 1 to 10 using a for loop.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="module4">
+            <h2>Module 4: Functions</h2>
+            <h3>Objectives</h3>
+            <ul>
+                <li>Understand how to create and use functions to organize code.</li>
+                <li>Learn about parameters, return values, and scope.</li>
+            </ul>
+            <h3>Defining Functions</h3>
+            <p>A function is a reusable block of code that performs a specific task.</p>
+            <pre><code>def greet(name):
+    return f"Hello, {name}!"
+
+print(greet("Alice"))  # Hello, Alice!</code></pre>
+            <h3>Parameters and Arguments</h3>
+            <ul>
+                <li><strong>Parameters</strong>: Variables defined in the function (e.g., <code>name</code>).</li>
+                <li><strong>Arguments</strong>: Values passed to the function when called (e.g., <code>"Alice"</code>).</li>
+                <li><strong>Default Parameters</strong>:</li>
+            </ul>
+            <pre><code>def greet(name="Guest"):
+    return f"Hello, {name}!"
+print(greet())  # Hello, Guest!</code></pre>
+            <h3>Return Statements</h3>
+            <p>Functions can return values using <code>return</code>. If omitted, the function returns <code>None</code>.</p>
+            <pre><code>def square(num):
+    return num * num
+
+result = square(4)
+print(result)  # 16</code></pre>
+            <h3>Scope</h3>
+            <p>Variables defined inside a function are local and not accessible outside.</p>
+            <pre><code>def add(a, b):
+    total = a + b  # Local variable
+    return total
+
+print(add(2, 3))  # 5
+# print(total)  # Error: total is not defined</code></pre>
+            <h3>References</h3>
+            <ul>
+                <li><a href="https://www.w3schools.com/python/python_functions.asp">Python Functions</a></li>
+                <li><a href="https://realpython.com/defining-your-own-python-function/">Real Python: Functions</a></li>
+                <li><a href="https://www.penguinrandomhouse.com/books/537140/python-crash-course-2nd-edition-by-eric-matthes/">Python Crash Course</a> by Eric Matthes</li>
+            </ul>
+            <div class="assessment">
+                <h3>Assessment</h3>
+                <p><strong>Quiz</strong>:</p>
+                <ol>
+                    <li>What is the purpose of a function?</li>
+                    <li>What happens if a function has no <code>return</code> statement?</li>
+                    <li>Explain the difference between a parameter and an argument.</li>
+                </ol>
+                <p><strong>Practical</strong>:</p>
+                <ul>
+                    <li>Write a function that takes two numbers and returns their product.</li>
+                    <li>Write a function that takes a name and an optional greeting (default: "Hi") and returns a formatted greeting, e.g., <code>greet("Bob")</code> returns "Hi, Bob!".</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="module5">
+            <h2>Module 5: Lists and Dictionaries</h2>
+            <h3>Objectives</h3>
+            <ul>
+                <li>Learn how to store and manipulate collections of data.</li>
+                <li>Understand lists and dictionaries and their common operations.</li>
+            </ul>
+            <h3>Lists</h3>
+            <p>A list is an ordered, mutable collection of items.</p>
+            <pre><code>fruits = ["apple", "banana", "cherry"]
+print(fruits[0])  # apple
+fruits.append("orange")  # Add to end
+fruits.remove("banana")  # Remove item
+print(len(fruits))  # 3</code></pre>
+            <h3>List Slicing</h3>
+            <p>Access parts of a list using <code>[start:end]</code>.</p>
+            <pre><code>numbers = [1, 2, 3, 4, 5]
+print(numbers[1:4])  # [2, 3, 4]</code></pre>
+            <h3>Dictionaries</h3>
+            <p>A dictionary stores key-value pairs.</p>
+            <pre><code>person = {"name": "Alice", "age": 25, "city": "New York"}
+print(person["name"])  # Alice
+person["email"] = "alice@example.com"  # Add key-value
+del person["age"]  # Remove key</code></pre>
+            <h3>Iterating Over Collections</h3>
+            <pre><code># List
+for fruit in fruits:
+    print(fruit)
+
+# Dictionary
+for key, value in person.items():
+    print(f"{key}: {value}")</code></pre>
+            <h3>References</h3>
+            <ul>
+                <li><a href="https://docs.python.org/3/tutorial/datastructures.html">Python Lists</a></li>
+                <li><a href="https://realpython.com/python-dicts/">Python Dictionaries</a></li>
+                <li><a href="https://learnpythonthehardway.org/">Learn Python the Hard Way</a> by Zed Shaw</li>
+            </ul>
+            <div class="assessment">
+                <h3>Assessment</h3>
+                <p><strong>Quiz</strong>:</p>
+                <ol>
+                    <li>What is the difference between a list and a dictionary?</li>
+                    <li>How do you access the second item in a list?</li>
+                    <li>What does the <code>items()</code> method do for dictionaries?</li>
+                </ol>
+                <p><strong>Practical</strong>:</p>
+                <ul>
+                    <li>Create a list of five favorite foods and:
+                        <ul>
+                            <li>Add a new food.</li>
+                            <li>Print the third item.</li>
+                            <li>Print the list length.</li>
+                        </ul>
+                    </li>
+                    <li>Create a dictionary for a contact (name, phone, email) and:
+                        <ul>
+                            <li>Add a new key-value pair for "address".</li>
+                            <li>Print all key-value pairs using a loop.</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="module6">
+            <h2>Module 6: Basic Error Handling</h2>
+            <h3>Objectives</h3>
+            <ul>
+                <li>Learn how to handle errors gracefully using try-except blocks.</li>
+                <li>Understand common errors and how to prevent them.</li>
+            </ul>
+            <h3>Common Errors</h3>
+            <ul>
+                <li><strong>SyntaxError</strong>: Invalid syntax, e.g., missing colon after <code>if</code>.</li>
+                <li><strong>NameError</strong>: Using an undefined variable.</li>
+                <li><strong>TypeError</strong>: Invalid operation for a data type, e.g., adding a string and integer.</li>
+                <li><strong>IndexError</strong>: Accessing a list index that doesn’t exist.</li>
+            </ul>
+            <h3>Try-Except Blocks</h3>
+            <p>Handle errors to prevent program crashes.</p>
+            <pre><code>try:
+    num = int(input("Enter a number: "))
+    print(100 / num)
+except ValueError:
+    print("Please enter a valid number.")
+except ZeroDivisionError:
+    print("Cannot divide by zero.")</code></pre>
+            <h3>Raising Exceptions</h3>
+            <p>You can raise errors intentionally.</p>
+            <pre><code>age = int(input("Enter your age: "))
+if age < 0:
+    raise ValueError("Age cannot be negative.")</code></pre>
+            <h3>References</h3>
+            <ul>
+                <li><a href="https://docs.python.org/3/tutorial/errors.html">Python Exceptions</a></li>
+                <li><a href="https://realpython.com/python-exceptions/">Real Python: Error Handling</a></li>
+                <li><a href="https://www.py4e.com/">Python for Everybody</a> by Charles Severance</li>
+            </ul>
+            <div class="assessment">
+                <h3>Assessment</h3>
+                <p><strong>Quiz</strong>:</p>
+                <ol>
+                    <li>Name two common Python errors and their causes.</li>
+                    <li>What is the purpose of a <code>try-except</code> block?</li>
+                    <li>What does the <code>raise</code> keyword do?</li>
+                </ol>
+                <p><strong>Practical</strong>:</p>
+                <ul>
+                    <li>Write a program that:
+                        <ul>
+                            <li>Asks the user for two numbers.</li>
+                            <li>Divides the first by the second.</li>
+                            <li>Handles <code>ValueError</code> and <code>ZeroDivisionError</code> with appropriate messages.</li>
+                        </ul>
+                    </li>
+                    <li>Write a program that checks if a user’s input is a positive number, raising a <code>ValueError</code> if it’s not.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="module7">
+            <h2>Module 7: Final Project</h2>
+            <h3>Objectives</h3>
+            <ul>
+                <li>Apply all concepts learned to build a small program.</li>
+                <li>Practice problem-solving and debugging.</li>
+            </ul>
+            <h3>Project: Personal Budget Tracker</h3>
+            <p>Create a program that:</p>
+            <ol>
+                <li>Allows users to add income and expenses.</li>
+                <li>Stores transactions in a list of dictionaries.</li>
+                <li>Calculates the total balance.</li>
+                <li>Handles invalid inputs.</li>
+            </ol>
+            <h3>Sample Code</h3>
+            <pre><code>transactions = []
+
+def add_transaction():
+    try:
+        amount = float(input("Enter amount: "))
+        category = input("Enter category (e.g., income, food): ")
+        transactions.append({"amount": amount, "category": category})
+        print("Transaction added!")
+    except ValueError:
+        print("Invalid amount entered.")
+
+def view_balance():
+    balance = sum(t["amount"] for t in transactions)
+    print(f"Current balance: ${balance:.2f}")
+
+while True:
+    print("\n1. Add Transaction\n2. View Balance\n3. Exit")
+    choice = input("Choose an option: ")
+    if choice == "1":
+        add_transaction()
+    elif choice == "2":
+        view_balance()
+    elif choice == "3":
+        break
+    else:
+        print("Invalid choice.")</code></pre>
+            <h3>References</h3>
+            <ul>
+                <li><a href="https://www.codecademy.com/learn/paths/python-projects-for-beginners">Python Projects for Beginners</a></li>
+                <li><a href="https://realpython.com/python-projects-for-beginners/">Real Python: Projects</a></li>
+                <li><a href="https://www.hackerrank.com/domains/python">HackerRank Python Challenges</a></li>
+            </ul>
+            <div class="assessment">
+                <h3>Assessment</h3>
+                <p><strong>Project Submission</strong>:</p>
+                <ul>
+                    <li>Implement the budget tracker with at least the features listed.</li>
+                    <li>Add one extra feature (e.g., categorize transactions, save to a file).</li>
+                    <li>Submit the code with comments explaining each part.</li>
+                </ul>
+                <p><strong>Reflection</strong>:</p>
+                <ul>
+                    <li>Write a short paragraph (3-5 sentences) explaining:
+                        <ul>
+                            <li>What you learned from the project.</li>
+                            <li>Any challenges you faced and how you overcame them.</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="conclusion">
+            <h2>Course Conclusion</h2>
+            <p>Congratulations! You’ve completed Programming 101. You now understand variables, data types, control flow, functions, collections, and error handling. Continue practicing by building small projects, exploring online challenges (e.g., HackerRank, LeetCode), or taking advanced courses in Python or other languages.</p>
+            <h3>Additional Resources</h3>
+            <ul>
+                <li><a href="https://www.codecademy.com/learn/learn-python-3">Codecademy Python Course</a></li>
+                <li><a href="https://www.coursera.org/specializations/python">Coursera: Python for Everybody</a></li>
+                <li><a href="https://www.freecodecamp.org/learn/scientific-computing-with-python/">FreeCodeCamp Python Tutorial</a></li>
+            </ul>
+        </section>
+    </div>
+    <footer>
+        <p>&copy; 2025 Programming 101 Course. All rights reserved.</p>
+    </footer>
+</body>
+</html>
